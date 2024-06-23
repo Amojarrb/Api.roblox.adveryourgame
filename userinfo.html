@@ -1,45 +1,45 @@
-function getUserIdFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('userid');
-}
-
-async function fetchRobloxUserInfo(userId) {
-    const response = await fetch(`https://users.roblox.com/v1/users/${userId}`);
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    return response.json();
-}
-
-function displayUserInfo(userInfo) {
-    const output = document.getElementById('output');
-    output.innerHTML = `
-        <h2>User Information</h2>
-        <p><strong>Username:</strong> ${userInfo.name}</p>
-        <p><strong>User ID:</strong> ${userInfo.id}</p>
-        <p><strong>Description:</strong> ${userInfo.description}</p>
-        <p><strong>Created:</strong> ${new Date(userInfo.created).toLocaleString()}</p>
-    `;
-}
-
-function displayError(error) {
-    const output = document.getElementById('output');
-    output.innerHTML = `<p>Error: ${error.message}</p>`;
-}
-
-async function main() {
-    const userId = getUserIdFromUrl();
-    if (!userId) {
-        displayError(new Error('User ID not provided in URL'));
-        return;
-    }
-
-    try {
-        const userInfo = await fetchRobloxUserInfo(userId);
-        displayUserInfo(userInfo);
-    } catch (error) {
-        displayError(error);
-    }
-}
-
-main();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox User Info</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Info</h2>
+    <table>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Username</td>
+            <td>{{ user_info['name'] }}</td>
+        </tr>
+        <tr>
+            <td>UserID</td>
+            <td>{{ user_info['id'] }}</td>
+        </tr>
+        <tr>
+            <td>Description</td>
+            <td>{{ user_info.get('description', 'N/A') }}</td>
+        </tr>
+        <!-- Agrega más filas según la información que quieras mostrar -->
+    </table>
+</body>
+</html>
