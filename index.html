@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mostrar Contenido de URL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Mostrar Contenido de URL</h1>
+    <div id="content">
+        <button onclick="fetchData()">Obtener Contenido</button>
+    </div>
+
+    <script>
+        function fetchData() {
+            var url = "https://games.roblox.com/v2/users/123456789/games?accessFilter=2&limit=10&sortOrder=Asc";
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error al solicitar la URL ${url}. Código de estado: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("content").innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                })
+                .catch(error => {
+                    document.getElementById("content").innerHTML = `<p>Error al hacer la solicitud HTTP: ${error}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
