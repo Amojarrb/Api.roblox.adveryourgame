@@ -30,13 +30,30 @@
     </table>
 
     <script>
-        // Función para cargar la información del usuario desde la API de Roblox
-        function loadUserInfo(userId) {
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.pathname);
+            const userId = urlParams.pathname.split('/').pop();
+
+            if (!userId) {
+                const table = document.getElementById('userinfo-table');
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="2" style="color: red;">User ID not provided</td>
+                    </tr>
+                `;
+                return;
+            }
+
             fetch(`https://users.roblox.com/v1/users/${userId}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user info');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     const table = document.getElementById('userinfo-table');
-                    table.innerHTML += `
+                    table.innerHTML = `
                         <tr>
                             <td>Username</td>
                             <td>${data.name}</td>
@@ -49,22 +66,18 @@
                             <td>Description</td>
                             <td>${data.description || 'N/A'}</td>
                         </tr>
-                        <!-- Agrega más filas según la información que quieras mostrar -->
+                        <!-- Puedes agregar más filas según la información que quieras mostrar -->
                     `;
                 })
-                .catch(error => console.error('Error fetching user info:', error));
-        }
-
-        // Llama a la función al cargar la página
-        document.addEventListener('DOMContentLoaded', () => {
-            // Obtiene el ID del usuario de la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const userId = urlParams.get('userid');
-            if (userId) {
-                loadUserInfo(userId);
-            } else {
-                console.error('User ID not provided in URL');
-            }
+                .catch(error => {
+                    console.error('Error fetching user info:', error);
+                    const table = document.getElementById('userinfo-table');
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="2" style="color: red;">Error fetching user info</td>
+                        </tr>
+                    `;
+                });
         });
     </script>
 </body>
