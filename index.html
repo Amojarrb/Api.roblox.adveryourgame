@@ -3,74 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Games Info</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .game {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-        }
-    </style>
+    <title>Mostrar Contenido de Otra Página</title>
+    <script>
+        window.onload = function() {
+            // URL de la página de la cual se va a extraer información
+            var targetUrl = 'https://example.com';
+
+            // Hacer una solicitud HTTP GET usando Fetch API
+            fetch(targetUrl)
+                .then(response => response.text())
+                .then(data => {
+                    // Mostrar el contenido de la página objetivo en un elemento div
+                    document.getElementById('content').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error al obtener información:', error);
+                    // Mostrar un mensaje de error si la solicitud falla
+                    document.getElementById('content').innerHTML = 'Error al obtener información.';
+                });
+        };
+    </script>
 </head>
 <body>
-
-    <h1>Información de Juegos de Roblox</h1>
-    <div id="games-container">
-        Cargando...
+    <div id="content">
+        Cargando contenido...
     </div>
-
-    <script>
-        async function fetchRobloxGames() {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const apiUrl = 'https://games.roblox.com/v2/users/123456789/games?accessFilter=2&limit=10&sortOrder=Asc';
-            const url = proxyUrl + apiUrl;
-
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-
-                if (!data || !data.data) {
-                    throw new Error('Formato de respuesta no esperado');
-                }
-
-                displayGames(data.data);
-            } catch (error) {
-                console.error('Error al obtener los datos:', error);
-                document.getElementById('games-container').innerText = 'Error al cargar los datos: ' + error.message;
-            }
-        }
-
-        function displayGames(games) {
-            const container = document.getElementById('games-container');
-            container.innerHTML = '';  // Limpiar contenido existente
-
-            if (games.length === 0) {
-                container.innerText = 'No se encontraron juegos.';
-                return;
-            }
-
-            games.forEach(game => {
-                const gameElement = document.createElement('div');
-                gameElement.className = 'game';
-                gameElement.innerHTML = `
-                    <h2>${game.name}</h2>
-                    <p><strong>ID del Juego:</strong> ${game.id}</p>
-                    <p><strong>Descripción:</strong> ${game.description || 'No disponible'}</p>
-                    <p><strong>Creado:</strong> ${new Date(game.created).toLocaleDateString()}</p>
-                    <p><strong>Actualizado:</strong> ${new Date(game.updated).toLocaleDateString()}</p>
-                `;
-                container.appendChild(gameElement);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', fetchRobloxGames);
-    </script>
-
 </body>
 </html>
