@@ -24,14 +24,17 @@
 
     <script>
         async function fetchRobloxGames() {
-            const url = 'https://games.roblox.com/v2/users/123456789/games?accessFilter=2&limit=10&sortOrder=Asc';
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const apiUrl = 'https://games.roblox.com/v2/users/123456789/games?accessFilter=2&limit=10&sortOrder=Asc';
+            const url = proxyUrl + apiUrl;
+
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                
+
                 if (!data || !data.data) {
                     throw new Error('Formato de respuesta no esperado');
                 }
