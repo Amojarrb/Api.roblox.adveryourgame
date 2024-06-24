@@ -31,10 +31,15 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
+                
+                if (!data || !data.data) {
+                    throw new Error('Formato de respuesta no esperado');
+                }
+
                 displayGames(data.data);
             } catch (error) {
                 console.error('Error al obtener los datos:', error);
-                document.getElementById('games-container').innerText = 'Error al cargar los datos.';
+                document.getElementById('games-container').innerText = 'Error al cargar los datos: ' + error.message;
             }
         }
 
