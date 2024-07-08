@@ -1,12 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hola</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sacador de info</title>
 </head>
 <body>
-    <h1 id="message">Data : Mensaje {}</h1>
-    <script src="script.js"></script>
+<h1>Sacador de info</h1>
+<form id="infoForm">
+  <label for="username">Usuario de Roblox:</label>
+  <input type="text" id="username" name="username" required>
+  <button type="submit">Obtener información</button>
+</form>
+
+<div id="infoContainer">
+  <!-- Aquí se mostrará la información -->
+</div>
+
+<script>
+document.getElementById('infoForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const username = document.getElementById('username').value;
+  
+  fetch(`/api/obtener_info_usuario_roblox?username=${username}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        document.getElementById('infoContainer').innerHTML = `<p>${data.error}</p>`;
+      } else {
+        const infoHTML = `
+          <p><strong>Username:</strong> ${data.Username}</p>
+          <p><strong>User ID:</strong> ${data.Id}</p>
+          <p><strong>Nombre completo:</strong> ${data.Username}</p>
+        `;
+        document.getElementById('infoContainer').innerHTML = infoHTML;
+      }
+    })
+    .catch(error => {
+      console.error('Error al obtener información:', error);
+      document.getElementById('infoContainer').innerHTML = `<p>Ocurrió un error al obtener la información.</p>`;
+    });
+});
+</script>
+
 </body>
 </html>
