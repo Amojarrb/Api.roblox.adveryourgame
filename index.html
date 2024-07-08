@@ -3,27 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Obtener juegos de usuario de Roblox</title>
+<title>Juegos de Usuario Roblox</title>
 </head>
 <body>
-<h1>Obtener juegos de usuario de Roblox</h1>
-<form id="gamesForm">
-  <label for="userId">ID de usuario de Roblox:</label>
-  <input type="text" id="userId" name="userId" placeholder="Ingresa el ID de usuario">
-  <button type="submit">Obtener juegos</button>
-</form>
+<h1>Juegos de Usuario Roblox</h1>
 
 <div id="gamesContainer">
   <!-- Aquí se mostrará la información de los juegos -->
 </div>
 
 <script>
-document.getElementById('gamesForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  
-  const userId = document.getElementById('userId').value;
-  
-  fetch(`/api/obtener_juegos_usuario_roblox?userId=${userId}`)
+// Función para obtener y mostrar los juegos del usuario con ID 1 de Roblox
+function obtenerJuegosUsuarioRoblox() {
+  const apiUrl = 'https://games.roblox.com/v2/users/1/games?accessFilter=2&limit=10&sortOrder=Asc';
+
+  fetch(apiUrl)
     .then(response => {
       if (!response.ok) {
         throw new Error('Error al obtener la información de los juegos');
@@ -31,25 +25,25 @@ document.getElementById('gamesForm').addEventListener('submit', function(event) 
       return response.json();
     })
     .then(data => {
-      if (data.error) {
-        document.getElementById('gamesContainer').innerHTML = `<p>${data.error}</p>`;
-      } else {
-        // Construir HTML para mostrar los juegos
-        let gamesHTML = '<h2>Juegos del usuario:</h2>';
-        gamesHTML += '<ul>';
-        data.forEach(game => {
-          gamesHTML += `<li><strong>Nombre:</strong> ${game.name}, <strong>ID:</strong> ${game.id}</li>`;
-        });
-        gamesHTML += '</ul>';
-        
-        document.getElementById('gamesContainer').innerHTML = gamesHTML;
-      }
+      // Construir HTML para mostrar los juegos
+      let gamesHTML = '<h2>Juegos del usuario:</h2>';
+      gamesHTML += '<ul>';
+      data.data.forEach(game => {
+        gamesHTML += `<li><strong>Nombre:</strong> ${game.name}, <strong>ID:</strong> ${game.id}</li>`;
+      });
+      gamesHTML += '</ul>';
+
+      // Mostrar los juegos en el contenedor gamesContainer
+      document.getElementById('gamesContainer').innerHTML = gamesHTML;
     })
     .catch(error => {
       console.error('Error al obtener información:', error);
       document.getElementById('gamesContainer').innerHTML = `<p>Ocurrió un error al obtener la información.</p>`;
     });
-});
+}
+
+// Llamar a la función al cargar la página
+document.addEventListener('DOMContentLoaded', obtenerJuegosUsuarioRoblox);
 </script>
 
 </body>
