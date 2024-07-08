@@ -3,43 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sacador de info</title>
+<title>Obtener juegos de usuario de Roblox</title>
 </head>
 <body>
-<h1>Sacador de info</h1>
-<form id="infoForm">
-  <label for="username">Usuario de Roblox:</label>
-  <input type="text" id="username" name="username" required>
-  <button type="submit">Obtener información</button>
+<h1>Obtener juegos de usuario de Roblox</h1>
+<form id="gamesForm">
+  <label for="userId">ID de usuario de Roblox:</label>
+  <input type="text" id="userId" name="userId" placeholder="Ingresa el ID de usuario">
+  <button type="submit">Obtener juegos</button>
 </form>
 
-<div id="infoContainer">
-  <!-- Aquí se mostrará la información -->
+<div id="gamesContainer">
+  <!-- Aquí se mostrará la información de los juegos -->
 </div>
 
 <script>
-document.getElementById('infoForm').addEventListener('submit', function(event) {
+document.getElementById('gamesForm').addEventListener('submit', function(event) {
   event.preventDefault();
   
-  const username = document.getElementById('username').value;
+  const userId = document.getElementById('userId').value;
   
-  fetch(`/api/obtener_info_usuario_roblox?username=${username}`)
-    .then(response => response.json())
+  fetch(`/api/obtener_juegos_usuario_roblox?userId=${userId}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener la información de los juegos');
+      }
+      return response.json();
+    })
     .then(data => {
       if (data.error) {
-        document.getElementById('infoContainer').innerHTML = `<p>${data.error}</p>`;
+        document.getElementById('gamesContainer').innerHTML = `<p>${data.error}</p>`;
       } else {
-        const infoHTML = `
-          <p><strong>Username:</strong> ${data.Username}</p>
-          <p><strong>User ID:</strong> ${data.Id}</p>
-          <p><strong>Nombre completo:</strong> ${data.Username}</p>
-        `;
-        document.getElementById('infoContainer').innerHTML = infoHTML;
+        // Construir HTML para mostrar los juegos
+        let gamesHTML = '<h2>Juegos del usuario:</h2>';
+        gamesHTML += '<ul>';
+        data.forEach(game => {
+          gamesHTML += `<li><strong>Nombre:</strong> ${game.name}, <strong>ID:</strong> ${game.id}</li>`;
+        });
+        gamesHTML += '</ul>';
+        
+        document.getElementById('gamesContainer').innerHTML = gamesHTML;
       }
     })
     .catch(error => {
       console.error('Error al obtener información:', error);
-      document.getElementById('infoContainer').innerHTML = `<p>Ocurrió un error al obtener la información.</p>`;
+      document.getElementById('gamesContainer').innerHTML = `<p>Ocurrió un error al obtener la información.</p>`;
     });
 });
 </script>
