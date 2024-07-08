@@ -3,9 +3,9 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# Función para obtener juegos de un usuario de Roblox
-def obtener_juegos_usuario_roblox(user_id):
-    url = f"https://games.roblox.com/v2/users/{user_id}/games?accessFilter=2&limit=10&sortOrder=Asc"
+# Función para obtener juegos del usuario con ID 1 de Roblox
+def obtener_juegos_usuario_roblox():
+    url = "https://games.roblox.com/v2/users/1/games?accessFilter=2&limit=10&sortOrder=Asc"
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -16,14 +16,10 @@ def obtener_juegos_usuario_roblox(user_id):
     except requests.exceptions.RequestException as e:
         return {"error": f"Error de conexión: {str(e)}"}
 
-# Ruta para obtener juegos de un usuario de Roblox
+# Ruta para obtener juegos del usuario con ID 1 de Roblox
 @app.route('/api/obtener_juegos_usuario_roblox', methods=['GET'])
 def api_obtener_juegos_usuario_roblox():
-    user_id = request.args.get('userId')
-    if not user_id:
-        return jsonify({"error": "Se requiere proporcionar 'userId' como parámetro"})
-    
-    juegos = obtener_juegos_usuario_roblox(user_id)
+    juegos = obtener_juegos_usuario_roblox()
     return jsonify(juegos)
 
 if __name__ == '__main__':
